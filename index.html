@@ -4,68 +4,424 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ドイツ語数字リスニング練習 (1-100)</title>
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shake': 'shake 0.82s cubic-bezier(.36,.07,.19,.97) both',
+                        'slide-up': 'slide-up 0.3s ease-out',
+                        'scale-in': 'scale-in 0.2s ease-out'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { 
+                                transform: 'scale(1)',
+                                boxShadow: '0 0 0 0 rgba(99, 102, 241, 0.7)'
+                            },
+                            '50%': { 
+                                transform: 'scale(1.05)',
+                                boxShadow: '0 0 0 20px rgba(99, 102, 241, 0)'
+                            }
+                        },
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+                        },
+                        'slide-up': {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        'scale-in': {
+                            '0%': { transform: 'scale(0.9)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .floating-shapes::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .floating-shapes::after {
+            content: '';
+            position: absolute;
+            bottom: 15%;
+            right: 10%;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, rgba(236, 72, 153, 0.3), rgba(251, 146, 60, 0.3));
+            border-radius: 30%;
+            animation: float 6s ease-in-out infinite reverse;
+        }
+        
+        .progress-glow {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+        
+        .input-glow:focus {
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+    </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-    <div class="card rounded-lg shadow-xl p-6 max-w-md w-full">
-        <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">🎧 ドイツ語数字リスニング</h1>
-            <p class="text-gray-600 text-sm">音声を聞いて数字を入力してください</p>
-        </div>
-        
-        <div class="mb-5">
-            <div class="flex justify-between text-xs text-gray-600 mb-1">
-                <span>進捗状況</span>
-                <span id="progressText">0 / 100</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-                <div id="progressBar" class="progress-bar bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
-            </div>
-        </div>
-        
-        <div class="text-center mb-6">
-            <button 
-                id="playAudioBtn" 
-                onclick="playCurrentNumber()" 
-                class="audio-button bg-blue-600 text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto hover:bg-blue-700 active:scale-95 transition-all duration-200"
-            >
-                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.776L5.616 14H2a1 1 0 01-1-1V7a1 1 0 011-1h3.616l2.767-2.776a1 1 0 011.617.776z" clip-rule="evenodd"></path>
-                    <path d="M14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 11-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.983 5.983 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.984 3.984 0 00-1.172-2.828 1 1 0 010-1.415z"></path>
-                </svg>
-            </button>
-            <p class="text-gray-600 text-xs mt-2">🔊 クリックして音声を再生</p>
-            <div id="currentWord" class="text-base text-blue-700 font-semibold mt-2 min-h-6"></div>
-        </div>
-        
-        <div class="space-y-3 mb-5">
-            <input 
-                type="number" 
-                id="userAnswer" 
-                placeholder="聞こえた数字を入力（例：42）"
-                min="1" 
-                max="100"
-                class="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:outline-none text-base text-center"
-            >
-            <button 
-                onclick="checkAnswer()" 
-                class="submit-button w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700 active:scale-95 transition-all duration-200"
-            >
-                確認
-            </button>
-        </div>
-        
-        <div id="feedbackMessage" class="text-center min-h-12 flex items-center justify-center rounded-md p-3 mb-4 text-sm"></div>
-        
-        <button 
-            id="restartButton" 
-            onclick="initializeGame()" 
-            class="hidden w-full bg-gray-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-600 active:scale-95 transition-all duration-200"
-        >
-            🔄 もう一度練習する
-        </button>
+<body class="min-h-screen gradient-bg floating-shapes relative">
+    <!-- Background decorative elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
     </div>
 
-    <script src="script.js"></script>
+    <div class="min-h-screen flex items-center justify-center p-4 relative z-10">
+        <div class="glass-morphism rounded-3xl shadow-2xl p-8 max-w-md w-full card-hover animate-scale-in">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mb-4 shadow-lg animate-float">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9.464 15.536a5 5 0 010-7.072M6.636 5.636a9 9 0 000 12.728M12 12h.01"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-2 tracking-tight">
+                    ドイツ語リスニング
+                </h1>
+                <p class="text-white/80 text-sm font-medium">
+                    音声を聞いて数字を入力してください
+                </p>
+            </div>
+            
+            <!-- Progress Section -->
+            <div class="mb-8">
+                <div class="flex justify-between text-sm text-white/80 mb-3 font-medium">
+                    <span>進捗状況</span>
+                    <span id="progressText">0 / 100</span>
+                </div>
+                <div class="w-full bg-white/20 rounded-full h-3 backdrop-blur-sm">
+                    <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full progress-glow transition-all duration-700 ease-out" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Audio Button -->
+            <div class="text-center mb-8">
+                <button 
+                    id="playAudioBtn" 
+                    onclick="playCurrentNumber()" 
+                    class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-purple-500/25"
+                >
+                    <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.776L5.616 14H2a1 1 0 01-1-1V7a1 1 0 011-1h3.616l2.767-2.776a1 1 0 011.617.776z" clip-rule="evenodd"></path>
+                        <path d="M14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 11-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.983 5.983 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.984 3.984 0 00-1.172-2.828 1 1 0 010-1.415z"></path>
+                    </svg>
+                </button>
+                <p class="text-white/70 text-sm mt-3 font-medium">クリックして音声を再生</p>
+                <div id="currentWord" class="text-lg text-white font-semibold mt-3 min-h-6"></div>
+            </div>
+            
+            <!-- Input Section -->
+            <div class="space-y-4 mb-6">
+                <input 
+                    type="number" 
+                    id="userAnswer" 
+                    placeholder="聞こえた数字を入力（例：42）"
+                    min="1" 
+                    max="100"
+                    class="w-full px-4 py-4 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 text-white placeholder-white/60 text-lg text-center font-medium input-glow transition-all duration-300 focus:border-white/50 focus:outline-none"
+                >
+                <button 
+                    onclick="checkAnswer()" 
+                    class="w-full btn-success text-white font-semibold py-4 px-6 rounded-2xl active:scale-95 transition-all duration-200 shadow-lg text-lg"
+                >
+                    ✓ 確認
+                </button>
+            </div>
+            
+            <!-- Feedback Message -->
+            <div id="feedbackMessage" class="text-center min-h-16 flex items-center justify-center rounded-2xl p-4 mb-4 text-sm font-medium backdrop-blur-sm transition-all duration-300"></div>
+            
+            <!-- Restart Button -->
+            <button 
+                id="restartButton" 
+                onclick="initializeGame()" 
+                class="hidden w-full bg-white/20 backdrop-blur-sm text-white font-semibold py-3 px-4 rounded-2xl hover:bg-white/30 active:scale-95 transition-all duration-200 border border-white/30"
+            >
+                🔄 もう一度練習する
+            </button>
+        </div>
+    </div>
+
+    <script>
+const allNumbers = [
+    { num: 1, de: "eins" }, { num: 2, de: "zwei" }, { num: 3, de: "drei" },
+    { num: 4, de: "vier" }, { num: 5, de: "fünf" }, { num: 6, de: "sechs" },
+    { num: 7, de: "sieben" }, { num: 8, de: "acht" }, { num: 9, de: "neun" },
+    { num: 10, de: "zehn" }, { num: 11, de: "elf" }, { num: 12, de: "zwölf" },
+    { num: 13, de: "dreizehn" }, { num: 14, de: "vierzehn" }, { num: 15, de: "fünfzehn" },
+    { num: 16, de: "sechzehn" }, { num: 17, de: "siebzehn" }, { num: 18, de: "achtzehn" },
+    { num: 19, de: "neunzehn" }, { num: 20, de: "zwanzig" }, { num: 21, de: "einundzwanzig" },
+    { num: 22, de: "zweiundzwanzig" }, { num: 23, de: "dreiundzwanzig" }, { num: 24, de: "vierundzwanzig" },
+    { num: 25, de: "fünfundzwanzig" }, { num: 26, de: "sechsundzwanzig" }, { num: 27, de: "siebenundzwanzig" },
+    { num: 28, de: "achtundzwanzig" }, { num: 29, de: "neunundzwanzig" }, { num: 30, de: "dreißig" },
+    { num: 31, de: "einunddreißig" }, { num: 32, de: "zweiunddreißig" }, { num: 33, de: "dreiunddreißig" },
+    { num: 34, de: "vierunddreißig" }, { num: 35, de: "fünfunddreißig" }, { num: 36, de: "sechsunddreißig" },
+    { num: 37, de: "siebenunddreißig" }, { num: 38, de: "achtunddreißig" }, { num: 39, de: "neununddreißig" },
+    { num: 40, de: "vierzig" }, { num: 41, de: "einundvierzig" }, { num: 42, de: "zweiundvierzig" },
+    { num: 43, de: "dreiundvierzig" }, { num: 44, de: "vierundvierzig" }, { num: 45, de: "fünfundvierzig" },
+    { num: 46, de: "sechsundvierzig" }, { num: 47, de: "siebenundvierzig" }, { num: 48, de: "achtundvierzig" },
+    { num: 49, de: "neunundvierzig" }, { num: 50, de: "fünfzig" }, { num: 51, de: "einundfünfzig" },
+    { num: 52, de: "zweiundfünfzig" }, { num: 53, de: "dreiundfünfzig" }, { num: 54, de: "vierundfünfzig" },
+    { num: 55, de: "fünfundfünfzig" }, { num: 56, de: "sechsundfünfzig" }, { num: 57, de: "siebenundfünfzig" },
+    { num: 58, de: "achtundfünfzig" }, { num: 59, de: "neunundfünfzig" }, { num: 60, de: "sechzig" },
+    { num: 61, de: "einundsechzig" }, { num: 62, de: "zweiundsechzig" }, { num: 63, de: "dreiundsechzig" },
+    { num: 64, de: "vierundsechzig" }, { num: 65, de: "fünfundsechzig" }, { num: 66, de: "sechsundsechzig" },
+    { num: 67, de: "siebenundsechzig" }, { num: 68, de: "achtundsechzig" }, { num: 69, de: "neunundsechzig" },
+    { num: 70, de: "siebzig" }, { num: 71, de: "einundsiebzig" }, { num: 72, de: "zweiundsiebzig" },
+    { num: 73, de: "dreiundsiebzig" }, { num: 74, de: "vierundsiebzig" }, { num: 75, de: "fünfundsiebzig" },
+    { num: 76, de: "sechsundsiebzig" }, { num: 77, de: "siebenundsiebzig" }, { num: 78, de: "achtundsiebzig" },
+    { num: 79, de: "neunundsiebzig" }, { num: 80, de: "achtzig" }, { num: 81, de: "einundachtzig" },
+    { num: 82, de: "zweiundachtzig" }, { num: 83, de: "dreiundachtzig" }, { num: 84, de: "vierundachtzig" },
+    { num: 85, de: "fünfundachtzig" }, { num: 86, de: "sechsundachtzig" }, { num: 87, de: "siebenundachtzig" },
+    { num: 88, de: "achtundachtzig" }, { num: 89, de: "neunundachtzig" }, { num: 90, de: "neunzig" },
+    { num: 91, de: "einundneunzig" }, { num: 92, de: "zweiundneunzig" }, { num: 93, de: "dreiundneunzig" },
+    { num: 94, de: "vierundneunzig" }, { num: 95, de: "fünfundneunzig" }, { num: 96, de: "sechsundneunzig" },
+    { num: 97, de: "siebenundneunzig" }, { num: 98, de: "achtundneunzig" }, { num: 99, de: "neunundneunzig" },
+    { num: 100, de: "hundert" }
+];
+
+let numbersToPractice = [];
+let currentNumber = null;
+const totalNumbers = allNumbers.length;
+
+const userAnswerInput = document.getElementById('userAnswer');
+const feedbackMessage = document.getElementById('feedbackMessage');
+const progressText = document.getElementById('progressText');
+const progressBar = document.getElementById('progressBar');
+const restartButton = document.getElementById('restartButton');
+const checkButton = document.querySelector('.btn-success');
+const currentWordDisplay = document.getElementById('currentWord');
+const playAudioBtn = document.getElementById('playAudioBtn');
+
+let speechSynth = window.speechSynthesis;
+let germanVoice = null;
+
+function loadVoices() {
+    const voices = speechSynth.getVoices();
+    germanVoice = voices.find(voice => voice.lang === 'de-DE' && (voice.name.includes('Google') || voice.name.includes('Microsoft'))) ||
+                  voices.find(voice => voice.lang.startsWith('de')) || 
+                  voices[0];
+}
+
+if (speechSynth) {
+    speechSynth.onvoiceschanged = loadVoices;
+    loadVoices();
+} else {
+    feedbackMessage.textContent = 'お使いのブラウザは音声合成に対応していません。';
+    feedbackMessage.classList.add('bg-red-500/20', 'border', 'border-red-500/30', 'text-red-200');
+    userAnswerInput.disabled = true;
+    checkButton.disabled = true;
+    playAudioBtn.disabled = true;
+}
+
+function speakGerman(text) {
+    if (!speechSynth || !germanVoice) {
+        console.warn("SpeechSynthesis API またはドイツ語音声が利用できません。");
+        return;
+    }
+    
+    if (speechSynth.speaking) {
+        speechSynth.cancel();
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'de-DE';
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.voice = germanVoice;
+    
+    playAudioBtn.classList.add('animate-pulse-glow');
+    utterance.onend = () => {
+        playAudioBtn.classList.remove('animate-pulse-glow');
+    };
+    utterance.onerror = (event) => {
+        console.error('SpeechSynthesisUtterance.onerror', event);
+        playAudioBtn.classList.remove('animate-pulse-glow');
+    };
+    
+    speechSynth.speak(utterance);
+}
+
+function playCurrentNumber() {
+    if (currentNumber) {
+        speakGerman(currentNumber.de);
+        currentWordDisplay.textContent = `🔊 再生中...`;
+        setTimeout(() => {
+            currentWordDisplay.textContent = '';
+        }, 2000);
+    }
+}
+
+function initializeGame() {
+    numbersToPractice = [...allNumbers];
+    userAnswerInput.disabled = false;
+    checkButton.disabled = false;
+    playAudioBtn.disabled = false;
+    restartButton.classList.add('hidden');
+    feedbackMessage.className = 'text-center min-h-16 flex items-center justify-center rounded-2xl p-4 mb-4 text-sm font-medium backdrop-blur-sm transition-all duration-300';
+    feedbackMessage.innerHTML = '';
+    updateProgress();
+    askNewNumber();
+}
+
+function askNewNumber() {
+    userAnswerInput.value = '';
+    userAnswerInput.focus();
+    feedbackMessage.innerHTML = '';
+    feedbackMessage.className = 'text-center min-h-16 flex items-center justify-center rounded-2xl p-4 mb-4 text-sm font-medium backdrop-blur-sm transition-all duration-300';
+    currentWordDisplay.textContent = '';
+
+    if (numbersToPractice.length === 0) {
+        currentWordDisplay.textContent = "🎉";
+        feedbackMessage.innerHTML = `
+            <div class="text-center">
+                <div class="text-2xl mb-2">🎊</div>
+                <div class="text-lg font-bold mb-1">おめでとうございます！</div>
+                <div class="text-sm opacity-90">全ての数字を完璧に聞き取れました！</div>
+            </div>
+        `;
+        feedbackMessage.classList.add('bg-green-500/20', 'border', 'border-green-400/40', 'text-green-200');
+        userAnswerInput.disabled = true;
+        checkButton.disabled = true;
+        playAudioBtn.disabled = true;
+        restartButton.classList.remove('hidden');
+        return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * numbersToPractice.length);
+    currentNumber = numbersToPractice[randomIndex];
+    
+    setTimeout(() => {
+        playCurrentNumber();
+    }, 500);
+}
+
+function checkAnswer() {
+    if (!currentNumber) return;
+
+    const userAnswer = parseInt(userAnswerInput.value);
+    
+    if (userAnswer === currentNumber.num) {
+        feedbackMessage.innerHTML = `
+            <div class="text-center">
+                <div class="text-xl mb-1">✅</div>
+                <div class="font-bold mb-1">正解！</div>
+                <div class="text-sm opacity-90"><strong>${currentNumber.num}</strong> (${currentNumber.de}) です</div>
+            </div>
+        `;
+        feedbackMessage.classList.add('bg-green-500/20', 'border', 'border-green-400/40', 'text-green-200', 'animate-slide-up');
+        
+        numbersToPractice = numbersToPractice.filter(item => item.num !== currentNumber.num);
+        updateProgress();
+        
+        setTimeout(askNewNumber, 2000);
+    } else {
+        feedbackMessage.innerHTML = `
+            <div class="text-center">
+                <div class="text-xl mb-1">❌</div>
+                <div class="font-bold mb-1">不正解</div>
+                <div class="text-sm opacity-90 mb-1">正解は <strong>${currentNumber.num}</strong> (${currentNumber.de}) です</div>
+                <div class="text-xs opacity-75">あなたの回答: ${isNaN(userAnswer) ? '未入力' : userAnswer}</div>
+            </div>
+        `;
+        feedbackMessage.classList.add('bg-red-500/20', 'border', 'border-red-400/40', 'text-red-200', 'animate-shake');
+        
+        setTimeout(() => {
+            speakGerman(currentNumber.de);
+        }, 1000);
+        
+        setTimeout(askNewNumber, 3500);
+    }
+}
+
+function updateProgress() {
+    const numbersDone = totalNumbers - numbersToPractice.length;
+    const percentage = (numbersDone / totalNumbers) * 100;
+    
+    progressText.textContent = `${numbersDone} / ${totalNumbers}`;
+    progressBar.style.width = `${percentage}%`;
+}
+
+userAnswerInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        checkAnswer();
+    }
+});
+
+window.onload = initializeGame;
+    </script>
 </body>
 </html>
