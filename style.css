@@ -1,69 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 body {
-    font-family: sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-    background-color: #f4f4f4;
+    font-family: 'Inter', sans-serif;
+    background-color: #f0f2f5; /* 落ち着いた背景色 */
     color: #333;
 }
-.container {
+
+.card {
     background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
-h1 {
-    color: #2c3e50;
+
+.progress-bar {
+    transition: width 0.3s ease-in-out;
 }
-.number-display {
-    font-size: 3em;
-    margin: 20px 0;
-    color: #3498db;
+
+.audio-button {
+    animation: none; /* デフォルトのアニメーションを無効に */
 }
-input[type="text"] {
-    padding: 10px;
-    font-size: 1em;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 10px;
-    width: 200px;
+
+.audio-button.is-speaking {
+    animation: pulse 1.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
 }
-button {
-    padding: 10px 15px;
-    font-size: 1em;
-    background-color: #2ecc71;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); /* Tailwind blue-500 */
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
 }
-button:hover {
-    background-color: #27ae60;
+
+.feedback-correct {
+    background-color: #ecfdf5; /* Tailwind green-50 */
+    border: 1px solid #a7f3d0; /* Tailwind green-200 */
+    color: #065f46; /* Tailwind green-800 */
 }
-.feedback {
-    margin-top: 20px;
-    font-size: 1.1em;
-    min-height: 30px; /* To prevent layout shifts */
+
+.feedback-incorrect {
+    background-color: #fef2f2; /* Tailwind red-50 */
+    border: 1px solid #fecaca; /* Tailwind red-200 */
+    color: #991b1b; /* Tailwind red-800 */
+    animation: shake 0.5s ease-in-out;
 }
-.correct {
-    color: #27ae60;
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
 }
-.incorrect {
-    color: #e74c3c;
-}
-.progress {
-    margin-top: 15px;
-    font-size: 0.9em;
-    color: #555;
-}
-#restartButton {
-    margin-top: 20px;
-    background-color: #3498db;
-}
-#restartButton:hover {
-    background-color: #2980b9;
-}
+
+/* Tailwind CSSのCDNを読み込むため、ここにTailwindの設定は記述不要です。 */
+/* ただし、カスタムスタイルやオーバーライドが必要な場合はここに記述します。 */
+/* 今回は上記のシンプルなカスタムスタイルのみです。 */

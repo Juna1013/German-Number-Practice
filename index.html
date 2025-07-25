@@ -1,25 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>German Number Practice (1-100)</title>
+    <title>ドイツ語数字リスニング練習 (1-100)</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container">
-        <h1>German Number Practice</h1>
-        <p>Write the German word for the number shown below.</p>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="card rounded-lg shadow-xl p-6 max-w-md w-full">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">🎧 ドイツ語数字リスニング</h1>
+            <p class="text-gray-600 text-sm">音声を聞いて数字を入力してください</p>
+        </div>
         
-        <div class="number-display" id="numberToSpell">--</div>
+        <div class="mb-5">
+            <div class="flex justify-between text-xs text-gray-600 mb-1">
+                <span>進捗状況</span>
+                <span id="progressText">0 / 100</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div id="progressBar" class="progress-bar bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+            </div>
+        </div>
         
-        <input type="text" id="userAnswer" placeholder="Your answer in German">
-        <button onclick="checkAnswer()">Check</button>
+        <div class="text-center mb-6">
+            <button 
+                id="playAudioBtn" 
+                onclick="playCurrentNumber()" 
+                class="audio-button bg-blue-600 text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto hover:bg-blue-700 active:scale-95 transition-all duration-200"
+            >
+                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.776L5.616 14H2a1 1 0 01-1-1V7a1 1 0 011-1h3.616l2.767-2.776a1 1 0 011.617.776z" clip-rule="evenodd"></path>
+                    <path d="M14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 11-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.983 5.983 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.984 3.984 0 00-1.172-2.828 1 1 0 010-1.415z"></path>
+                </svg>
+            </button>
+            <p class="text-gray-600 text-xs mt-2">🔊 クリックして音声を再生</p>
+            <div id="currentWord" class="text-base text-blue-700 font-semibold mt-2 min-h-6"></div>
+        </div>
         
-        <div class="feedback" id="feedbackMessage"></div>
-        <div class="progress" id="progressMessage"></div>
-
-        <button id="restartButton" style="display:none;" onclick="initializeGame()">Restart Practice</button>
+        <div class="space-y-3 mb-5">
+            <input 
+                type="number" 
+                id="userAnswer" 
+                placeholder="聞こえた数字を入力（例：42）"
+                min="1" 
+                max="100"
+                class="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:outline-none text-base text-center"
+            >
+            <button 
+                onclick="checkAnswer()" 
+                class="submit-button w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700 active:scale-95 transition-all duration-200"
+            >
+                確認
+            </button>
+        </div>
+        
+        <div id="feedbackMessage" class="text-center min-h-12 flex items-center justify-center rounded-md p-3 mb-4 text-sm"></div>
+        
+        <button 
+            id="restartButton" 
+            onclick="initializeGame()" 
+            class="hidden w-full bg-gray-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-600 active:scale-95 transition-all duration-200"
+        >
+            🔄 もう一度練習する
+        </button>
     </div>
 
     <script src="script.js"></script>

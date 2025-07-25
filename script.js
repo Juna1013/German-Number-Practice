@@ -39,75 +39,177 @@ let numbersToPractice = [];
 let currentNumber = null;
 const totalNumbers = allNumbers.length;
 
-const numberDisplay = document.getElementById('numberToSpell');
 const userAnswerInput = document.getElementById('userAnswer');
 const feedbackMessage = document.getElementById('feedbackMessage');
-const progressMessage = document.getElementById('progressMessage');
+const progressText = document.getElementById('progressText');
+const progressBar = document.getElementById('progressBar');
 const restartButton = document.getElementById('restartButton');
+const checkButton = document.querySelector('.submit-button'); // クラス名に変更
+const currentWordDisplay = document.getElementById('currentWord');
+const playAudioBtn = document.getElementById('playAudioBtn');
+
+// Web Speech API setup
+let speechSynth = window.speechSynthesis;
+let germanVoice = null;
+
+// Find German voice
+function loadVoices() {
+    const voices = speechSynth.getVoices();
+    // 優先順位: 'de-DE' の完全一致 -> 'de' で始まるもの -> 最初の利用可能な音声
+    germanVoice = voices.find(voice => voice.lang === 'de-DE' && voice.name.includes('Google') || voice.name.includes('Microsoft')) ||
+                  voices.find(voice => voice.lang.startsWith('de')) || 
+                  voices[0];
+}
+
+// Load voices when available
+if (speechSynth) {
+    speechSynth.onvoiceschanged = loadVoices;
+    loadVoices(); // Initial load
+} else {
+    // SpeechSynthesis APIが利用できない場合のフォールバック（例: エラーメッセージ表示）
+    feedbackMessage.textContent = 'お使いのブラウザは音声合成に対応していません。';
+    feedbackMessage.classList.add('feedback-incorrect');
+    userAnswerInput.disabled = true;
+    checkButton.disabled = true;
+    playAudioBtn.disabled = true;
+}
+
+
+function speakGerman(text) {
+    if (!speechSynth || !germanVoice) {
+        console.warn("SpeechSynthesis API またはドイツ語音声が利用できません。");
+        return;
+    }
+    
+    if (speechSynth.speaking) {
+        speechSynth.cancel();
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'de-DE';
+    utterance.rate = 0.9; // 少しゆっくりめに調整
+    utterance.pitch = 1;
+    utterance.voice = germanVoice; // 選択したドイツ語音声を適用
+    
+    playAudioBtn.classList.add('is-speaking'); // アニメーションクラスを追加
+    utterance.onend = () => {
+        playAudioBtn.classList.remove('is-speaking'); // アニメーションクラスを削除
+    };
+    utterance.onerror = (event) => {
+        console.error('SpeechSynthesisUtterance.onerror', event);
+        playAudioBtn.classList.remove('is-speaking');
+    };
+    
+    speechSynth.speak(utterance);
+}
+
+function playCurrentNumber() {
+    if (currentNumber) {
+        speakGerman(currentNumber.de);
+        currentWordDisplay.textContent = `🔊 ドイツ語`; // 音声再生中は「ドイツ語」と表示
+        setTimeout(() => {
+            currentWordDisplay.textContent = '';
+        }, 2000); // 2秒後に非表示
+    }
+}
 
 function initializeGame() {
-    numbersToPractice = [...allNumbers]; // Create a copy to modify
+    numbersToPractice = [...allNumbers]; // 全ての数字で練習リストを初期化
     userAnswerInput.disabled = false;
-    document.querySelector('button[onclick="checkAnswer()"]').disabled = false;
-    restartButton.style.display = 'none';
+    checkButton.disabled = false;
+    playAudioBtn.disabled = false;
+    restartButton.classList.add('hidden');
+    feedbackMessage.className = 'text-center min-h-12 flex items-center justify-center rounded-md p-3 mb-4 text-sm';
+    feedbackMessage.innerHTML = '';
+    updateProgress();
     askNewNumber();
 }
 
 function askNewNumber() {
     userAnswerInput.value = '';
     userAnswerInput.focus();
-    feedbackMessage.textContent = '';
-    feedbackMessage.className = 'feedback';
+    feedbackMessage.innerHTML = '';
+    feedbackMessage.className = 'text-center min-h-12 flex items-center justify-center rounded-md p-3 mb-4 text-sm';
+    currentWordDisplay.textContent = '';
 
     if (numbersToPractice.length === 0) {
-        numberDisplay.textContent = "🎉";
-        feedbackMessage.textContent = "¡Glückwunsch! Du hast alle Zahlen perfekt geschrieben.";
-        feedbackMessage.className = 'feedback correct';
-        progressMessage.textContent = `Completed: ${totalNumbers} / ${totalNumbers}`;
+        currentWordDisplay.textContent = "🎉";
+        feedbackMessage.innerHTML = `
+            <div class="text-green-600 font-semibold">
+                <div class="text-xl mb-1">🎊 おめでとうございます！</div>
+                <div>全ての数字を完璧に聞き取れました！</div>
+            </div>
+        `;
+        feedbackMessage.classList.add('feedback-correct');
         userAnswerInput.disabled = true;
-        document.querySelector('button[onclick="checkAnswer()"]').disabled = true;
-        restartButton.style.display = 'block';
+        checkButton.disabled = true;
+        playAudioBtn.disabled = true;
+        restartButton.classList.remove('hidden');
         return;
     }
 
     const randomIndex = Math.floor(Math.random() * numbersToPractice.length);
     currentNumber = numbersToPractice[randomIndex];
-    numberDisplay.textContent = currentNumber.num;
-    updateProgress();
+    
+    // Auto-play the number after a short delay
+    setTimeout(() => {
+        playCurrentNumber();
+    }, 500);
 }
 
 function checkAnswer() {
     if (!currentNumber) return;
 
-    const userAnswer = userAnswerInput.value.trim().toLowerCase();
+    const userAnswer = parseInt(userAnswerInput.value);
     
-    if (userAnswer === currentNumber.de) {
-        feedbackMessage.textContent = `Richtig! ${currentNumber.num} ist "${currentNumber.de}".`;
-        feedbackMessage.className = 'feedback correct';
+    if (userAnswer === currentNumber.num) {
+        feedbackMessage.innerHTML = `
+            <div class="text-xl mb-1">✅ 正解！</div>
+            <div><strong>${currentNumber.num}</strong> (${currentNumber.de}) です</div>
+        `;
+        feedbackMessage.classList.add('feedback-correct');
         
-        // Remove the correctly spelled number from the practice list
+        // 正解した数字を練習リストから削除
         numbersToPractice = numbersToPractice.filter(item => item.num !== currentNumber.num);
+        updateProgress();
         
-        setTimeout(askNewNumber, 1500); // Wait a bit before showing the next number
+        setTimeout(askNewNumber, 2000); // 2秒後に次の問題
     } else {
-        feedbackMessage.innerHTML = `Falsch. Die richtige Antwort für ${currentNumber.num} ist "<strong>${currentNumber.de}</strong>". <br>Du hast geschrieben: "${userAnswer}".`;
-        feedbackMessage.className = 'feedback incorrect';
-        // Keep the number in the list to try again later
-        setTimeout(askNewNumber, 3000); // Wait a bit longer on incorrect
+        feedbackMessage.innerHTML = `
+            <div class="text-xl mb-1">❌ 不正解</div>
+            <div class="mb-1">正解は <strong>${currentNumber.num}</strong> (${currentNumber.de}) です</div>
+            <div class="text-sm">あなたの回答: ${isNaN(userAnswer) ? '未入力' : userAnswer}</div>
+        `;
+        feedbackMessage.classList.add('feedback-incorrect');
+        
+        // 不正解の場合、正しい音声を再度再生
+        setTimeout(() => {
+            speakGerman(currentNumber.de);
+        }, 1000);
+        
+        // シェイクアニメーションをリセット
+        feedbackMessage.classList.remove('shake');
+        void feedbackMessage.offsetWidth; // 強制的にリフロー
+        feedbackMessage.classList.add('shake');
+        
+        setTimeout(askNewNumber, 3500); // 3.5秒後に次の問題
     }
 }
 
 function updateProgress() {
     const numbersDone = totalNumbers - numbersToPractice.length;
-    progressMessage.textContent = `Fortschritt: ${numbersDone} / ${totalNumbers} richtig. ${numbersToPractice.length} übrig.`;
+    const percentage = (numbersDone / totalNumbers) * 100;
+    
+    progressText.textContent = `${numbersDone} / ${totalNumbers}`;
+    progressBar.style.width = `${percentage}%`;
 }
 
-// Allow Enter key to submit answer
+// Enterキーで回答を送信
 userAnswerInput.addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         checkAnswer();
     }
 });
 
-// Start the game when the page loads
+// ページロード時にゲームを開始
 window.onload = initializeGame;
