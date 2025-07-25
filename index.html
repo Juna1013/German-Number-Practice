@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>German Number Practice (1-100)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>German Number Practice</h1>
+        <p>Write the German word for the number shown below.</p>
+        
+        <div class="number-display" id="numberToSpell">--</div>
+        
+        <input type="text" id="userAnswer" placeholder="Your answer in German">
+        <button onclick="checkAnswer()">Check</button>
+        
+        <div class="feedback" id="feedbackMessage"></div>
+        <div class="progress" id="progressMessage"></div>
+
+        <button id="restartButton" style="display:none;" onclick="initializeGame()">Restart Practice</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
